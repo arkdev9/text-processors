@@ -1,0 +1,12 @@
+python-dotenv
+farm-haystack
+fastapi
+uvicorn[standard]
+PyJWT
+textract
+werkzeug
+pdfminer.six
+clean-text[gpl]
+google-cloud-storage
+google-api-python-client
+pytesseract
