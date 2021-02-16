@@ -8,22 +8,19 @@ import uuid
 import requests
 import textract
 
-from fastapi import Header
-from datetime import datetime
-
-from fastapi import APIRouter, HTTPException, UploadFile, File, Form
+from fastapi import APIRouter, Header, HTTPException, UploadFile, File, Form
 from datetime import datetime
 from cleantext import clean
 from pathlib import Path
 from pydantic import BaseModel
 from typing import Optional, List, List, Dict
+
 from haystack.preprocessor.preprocessor import PreProcessor
 from haystack.document_store.elasticsearch import ElasticsearchDocumentStore
 from haystack.file_converter.pdf import PDFToTextConverter
 from haystack.file_converter.txt import TextConverter
-from ..config import *
-from ..config import PG
 
+from ..config import *
 
 from ..utils.file_downloaders import download_file, download_webextension_file
 from ..utils.text_processor import get_text_from_file,  get_file_path
@@ -33,21 +30,6 @@ from ..utils.image_extraction import image_extractor
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
-document_store = ElasticsearchDocumentStore(
-    host=DB_HOST,
-    port=DB_PORT,
-    username=DB_USER,
-    password=DB_PW,
-    index="meroo_conversation",
-    scheme=ES_CONN_SCHEME,
-    ca_certs=False,
-    verify_certs=False,
-    text_field=TEXT_FIELD_NAME,
-    search_fields=SEARCH_FIELD_NAME,
-    embedding_dim=EMBEDDING_DIM,
-    embedding_field=EMBEDDING_FIELD_NAME,
-    faq_question_field=FAQ_QUESTION_FIELD_NAME,
-)
 
 document_store_webextension = ElasticsearchDocumentStore(
     host=DB_HOST,
@@ -90,7 +72,6 @@ class ConversationTextModel(BaseModel):
 
 
 class ScrapeImageModel(BaseModel):
-    auth: str
     data_uri: str
 
 
@@ -295,5 +276,9 @@ def scrape_webextension_docs(request: WebextensionDocsModel, authorization: Opti
 
 
 @router.post('/scrape-image')
-def scrape_image(request: ScrapeImageModel):
-    return image_extractor(request.auth, request.data_uri)
+def scrape_image(request: ScrapeImageModel, authorization: Optional[str] = Header(None)):
+    extracted = image_extractor(authorization, request.data_uri)
+    if extracted[1] == 200:
+        return {'ok': True}
+    else:
+        return {'ok': False, 'message': extracted}

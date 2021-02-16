@@ -1,22 +1,24 @@
-from base64 import b64decode
 import os
-import os.path
-from os import path
 import requests
 import tempfile
 import jwt
 import json
+import re
+import pytesseract
+
+from base64 import b64decode
 from werkzeug.utils import secure_filename
 from google.cloud import storage
 from datetime import datetime
 from elasticsearch import Elasticsearch
-import re
-import pytesseract
 
 from .text_processor import clean_text
+from ..config import DB_HOST, DB_PORT, DB_USER, DB_PW, ES_CONN_SCHEME, PG
 
-es = Elasticsearch(["https://35.230.52.64:9200"],
-                   http_auth=("elastic", "IyuPrspNGoG6a5gHBa3C"), verify_certs=False)
+es = Elasticsearch(["{}://{}:{}".format(ES_CONN_SCHEME, DB_HOST, DB_PORT)],
+                   http_auth=(DB_USER, DB_PW), verify_certs=False)
+storage_client = storage.Client.from_service_account_json(
+    'app/data/webextension-images-servacc-key.json')
 
 
 def get_file_path(filename):
@@ -25,7 +27,6 @@ def get_file_path(filename):
 
 
 def upload_blob(bucket_name, source_file_name, destination_blob_name, user, data):
-    storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(destination_blob_name)
     blob.upload_from_filename(source_file_name)
@@ -43,7 +44,7 @@ def image_extractor(auth, data_uri):
     user = ''
     try:
         print('try', auth)
-        res = requests.get('http://35.230.52.64:42069/jwt_secrets')
+        res = requests.get('{}/jwt_secrets'.format(PG))
         res = json.loads(res.content)
         print('res: {}'.format(res))
         secret = res[0]['secret']
