@@ -36,7 +36,7 @@ def upload_blob(bucket_name, source_file_name, destination_blob_name, user, data
         "media_link": blob._properties['mediaLink'],
         "text": data
     }
-    es.index(index="webextension-images", body=doc)
+    es.index(index="webextension", body=doc)
 
 
 def image_extractor(auth, data_uri):
