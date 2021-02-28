@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "nlp-dl-meroo",
+  "private_key_id": "db7415935482ba302c9e7c61893ccb24fc691381",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDQqcNteHqBu2qJ\nJVFRTPxhVxzlJ9D5rECx1nwcNd86a+b2kUNyj7SySXtsdZHAlevfuYMuRJoBuQA2\nORCWCGzymzpn57phiA+UV1UBUyj2Gy/7FsUo1RVWXZiFhbqrEyxeSSvqzmLP8hYU\nGQHcfszqWNNz5C9+61TSMH4UpdN36BlALuQo9znglBE0n++JNGu2+TmRlqEGBXGl\n0U3QfASzsaFm8eToJAYTvDxA4kDcLYU0ux4U137hKmZi4ruaNGeXZDS5CS/BELjQ\nXE4JL9wn1chYbcdbdCePA3nchKvBxg9PN6adlw7TiYUko0/aEKUJJTgtUXqFhTLa\n2DN7pR5hAgMBAAECggEABa5TUdQPuHUL26gi8OlSnJ1jttaSuwFyu+hSZ7SpVCWU\n6epl/cFQ2dSrU9nksuulj/d724vme/IT+smAKtLe5rLp/lT8fx0rtTF7uAtZLaVA\nn8bspj6q6TeLBOVjOtN3pGIuY02sLEFI/ZkysrgsZGL3t0RqpfRY0ld/T0OaElpx\nHF16Xwu6ai5EeLlZUb0zzbmXh5UMhKOPn00swqIrOc5FWSUEnODAtwXjba5Lsa74\ntPEPxrdRiSYJhUpuYrF3Ss1TrgEv6jrJsGG/oeH+Ye4GFCJi805bBRcd5cOVd1Yh\n9sA/v5PZ72f0Z00ENlqdKa9BT6eAxpjCTqeQ2kFvGwKBgQD3VtRwmvuoljeOqh6F\nFOzyXTXz2UQy+R9s3krvmT6ukhHapZ7f5nSVgANFxK52t2Bmqyaxin679JZWJnSJ\nUaLBfYjaVyRGfySPuBk0mt6OYhZgzjKxwTVUDXqsnEgSHvkUB+wn8MhpwNwNAZZb\n4dMOpYS048df0Ln0wfTEt5xMhwKBgQDX+Dz1CasLK4MNE2QRo2ZY1P3EDI4Bb7vW\n2ug/z4BHqvp4ekBc2jWBE7YwHtbiIYyecTjhGzIK8ATwN8hKJXRn5diKvem0iMUv\nzkkbef4lSJQtYsWnTlnRCvTM9xMsqW8pTY+zmDI7GnT/ycO7F6F95EnUlD6971/t\nw21Z9J+f1wKBgQCFATJYI1909uKFW0HyOqB4bFtY99rOtlyJxLfzRCsK4Q2s0Ccx\nK9JBmocn+2399Ppn+11hV6JzHEHDrgY42ad1+TWgg//D0RcuGcekHCvV0TVLdVaZ\nc9ZjjqQLMjcnV3SFqwT5LWf4RneOnu3mFvfSBnvochyCj9GPpsUjC8GG/QKBgQCV\nBG/rE7S1jFxslUii8wAXoz9GGvORAiu14G4IOYDl8o/IuXHXn6jzW0qGgYD7nvKM\nEMuSZ1VsPpjpt1O39YgQeIOll8y+CPEmP0wqbU5zI1U6y8Bd5K4Mk2a+Vm0gj/hn\no2DYJtfh+Ctqoyku2utPFknrKC7yl0y1nfbB7wyFGQKBgH/7ATgPkx4VP2+hapJr\nTzAVfXRml55YF4N4jxVkjVTj+ufuF0L8fPMW2HIFusAAoFryulGcoInI5FXLoj1y\ne6L1qCaaS1+2icGE/mhlbrjqYp9ns8gjYvmYoxtH8SMdc3d3ppbZCgL/vs2fwHbb\n1SIN31naJWOOqIQrWNfCrM7q\n-----END PRIVATE KEY-----\n",
+  "client_email": "model-downloader@nlp-dl-meroo.iam.gserviceaccount.com",
+  "client_id": "116354664572066631426",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/model-downloader%40nlp-dl-meroo.iam.gserviceaccount.com"
+}

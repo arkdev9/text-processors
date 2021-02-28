@@ -8,10 +8,7 @@ import uuid
 import requests
 import textract
 
-from fastapi import Header
-from datetime import datetime
-
-from fastapi import APIRouter, HTTPException, UploadFile, File, Form
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Header
 from datetime import datetime
 from cleantext import clean
 from pathlib import Path
