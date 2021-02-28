@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "nlp-dl-meroo",
+  "private_key_id": "ab8e36d05c1ade23817810d788acd5702d183e59",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCtEXDnOEPE/VxY\nzmb/Yb4nmSc6IlDti0ewFMSt4R3fKrVXcxH2xs8HmoWcbZoBgRkG08Guky7xn6Cw\nuDUx3T1N5KRJMgOs5zudzufQvve2zV9RYNLUWGz2XGkGMbzNq6cpecu+zbhTJYsd\n4/wlBI7b1QTiWMrLCR8FMxEvB8hfj8xiYq5R9m60v3XRUvoLA91DKmZHt+YqqcM2\nP2Eizg8q2TpiWDIpTftXD56f8z7Mg5poX9c9Og13xqXMnkOIV5t6sUvGNHr87G3Q\nClIoIRrxNdoC7AZFGHXd7RKNeT0X8tytEx5sFz6XLqZsbfDGywjDySvrGTDHU7tN\nsdrnivNrAgMBAAECggEACRyqd5oIQ2ZdhtVzKc4BH3+aR57H6QHUx+oIAumf04Ch\npJWL5BTKkKlrkHVazup3oVrjzyezqIgRg0xnjJUL5b58gdgOxns0MdZTcTOkwiyk\n8Jlq8EApmHz8EJXszV1Uw0PE3Opi4onO/cdjnqVTSjK4e5xWLQNxbSonpPTBcXqA\nC5l0WNhvPtsWSJXDwz799bFoESgAmpOP8RNWKeQQ43bSgqxm6/SwL8YbjX144gAS\nm7uLMawBcFPILB4AtQHAYUdeaMGQfQa9qM6Ju+ntyUJadyb8Y7R92Kiu51oN1O2Z\nrnVSlC9IJ37bQq9STJtTn5i1NJhNPKWT5aj9RDlA7QKBgQDTYNVlgn89uwmamnJA\nZR7mwvLr/du6II18ZLQGQIUrql7S/Q16CrgK1hbAASnM+v4PT+wWwJx/jKJkAanf\n9bH/8kFH2nBuOh1E0xLtbRBBCVxC+TTXN5rkbk5ByvbZaUCkpwuFVZwkXd/60eKe\nNwEHyIFIRkTw1baP+AujwZwXjwKBgQDRmkbEzOKT450Q16+MDmAISxFl2AtNRZAp\n1hYmmUM6tmZytdV9ErTw86bAdDLhjcmbSKpv3Gt3aeHt45LNXsCosydeBJ9E/exg\nxvCaFBWVrAptyWUDTWD2lfm7uUaKMIAYCtoUD43ijyWWAr2zPUcvnfWpdGsOy5qu\nOp1a2xvYZQKBgQCKawrS4lW4ctajKyhOCunlaxvwddiBVffQ0ZEh1vZd1b8qoxNE\nK+jBD9jt+tUIqgPcuxV7AL56t/lPS9eWFSpu1JDzIJQnWl74RtBKMfVG4X5NTSvR\nE1SW6bTNWL+1NzthlxHwSlNpbR/S+8ZOnO5Lznz6eymCHDDkriXRImO4+QKBgAFS\nJJIG7IKcE5hQk6WhTY+f0Xs/0kppXtA0ri0OGDNdhOXCKZdBL+y4zFs4ID31o8ib\nu586116IR0k1fu5WY4ZsopngE5TeuMefWVLPP5eS3vn0I/PSYAMNzOYW88/ZIGWG\nY/tuYamE12rLl6ByiWlOaIbp2ebc95uTePxilxlVAoGAd93l/0KUtbxQgUrKfBTv\n5RjL2ec8VNec8Vy0HQM6SMCxg2TW9ime9dCo2aevvKEYb96B7wBNnFtz9PnlhueZ\n4rdR+cxjduQaIMJ5kH8+m6c5XB/BBohEYJrPp/gtSuVLkF9RtzjvL9sSVtzuKUhM\n4JwkPQhHXgmTgJWZcOE/su0=\n-----END PRIVATE KEY-----\n",
+  "client_email": "webextension-images@nlp-dl-meroo.iam.gserviceaccount.com",
+  "client_id": "109229429937686174459",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/webextension-images%40nlp-dl-meroo.iam.gserviceaccount.com"
+}
