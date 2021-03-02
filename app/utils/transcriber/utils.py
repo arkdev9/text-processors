@@ -1,7 +1,10 @@
 from os import path
-
+import json
+import urllib
+import isodate
 import subprocess
 import youtube_dl
+import requests
 
 
 def convert_mp4_wav(video_id, ext):
@@ -24,3 +27,17 @@ def download_yt(video_id):
         return 'webm'
     else:
         return "FUCK"
+
+
+def get_video_duration(video_id: str):
+    api_key = "AIzaSyBTR1FSGH1Rptk0kAtzeABPFeIvJ3NhFyM"
+    searchUrl = "https://www.googleapis.com/youtube/v3/videos?id=" + \
+        video_id+"&key="+api_key+"&part=contentDetails"
+    response = requests.get(searchUrl)
+    data = response.json()
+    print(data)
+    all_data = data['items']
+    contentDetails = all_data[0]['contentDetails']
+    duration = contentDetails['duration']
+    dur = isodate.parse_duration(duration)
+    return dur.total_seconds()

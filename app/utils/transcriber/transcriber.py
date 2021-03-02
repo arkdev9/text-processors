@@ -2,7 +2,6 @@ import os
 import sys
 import json
 import spacy
-import pafy
 import wave
 import textwrap
 import numpy as np
