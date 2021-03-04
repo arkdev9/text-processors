@@ -1,4 +1,4 @@
-from os import path
+import os
 import json
 import urllib
 import isodate
@@ -7,26 +7,28 @@ import youtube_dl
 import requests
 
 
-def convert_mp4_wav(video_id, ext):
-    command = "ffmpeg -i {}.{} -vn -ar 16000 -ac 1 {}.wav".format(
-        video_id, ext, video_id)
-    subprocess.call(command, shell=True)
+def get_audio_url(youtube_url: str) -> str:
+    command = ['youtube-dl', '--youtube-skip-dash-manifest', '-g', youtube_url]
+    process = subprocess.Popen(
+        command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = process.communicate()
+
+    urls = out.split(b'\n')
+    audio_url = urls[1].decode('utf-8')
+    return audio_url
 
 
-def download_yt(video_id):
-    ydl = youtube_dl.YoutubeDL({'outtmpl': '%(id)s.%(ext)s'})
-    with ydl:
-        results = ydl.download(
-            ['http://www.youtube.com/watch?v={}'.format(video_id)])
+def download_audio(vid: str):
+    youtube_url = 'https://youtube.com/watch?v={}'.format(vid)
+    cmd_str = 'ffmpeg -ss 0 -i "{}" -ss 0 -t 300 {}.mp3'.format(
+        get_audio_url(youtube_url), vid)
+    print(cmd_str)
+    os.system(cmd_str)
 
-    if path.exists('./{}.mkv'.format(video_id)):
-        return 'mkv'
-    elif path.exists('./{}.mp4'.format(video_id)):
-        return 'mp4'
-    elif path.exists('./{}.webm'.format(video_id)):
-        return 'webm'
-    else:
-        return "FUCK"
+    cmd_str = 'ffmpeg -i {}.mp3 {}.wav'.format(vid, vid)
+    os.system(cmd_str)
+    os.remove('{}.mp3'.format(vid))
+    return '{}.wav'.format(vid)
 
 
 def get_video_duration(video_id: str):

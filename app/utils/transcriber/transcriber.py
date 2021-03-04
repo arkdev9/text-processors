@@ -11,7 +11,8 @@ from vosk import Model, KaldiRecognizer, SetLogLevel
 from transformers import ProphetNetTokenizer, ProphetNetForConditionalGeneration, ProphetNetConfig
 from punctuator import Punctuator
 
-from .utils import convert_mp4_wav, download_yt
+from .utils import download_audio
+from .fcm import send_message
 
 
 model = Model(
@@ -68,16 +69,17 @@ def vosk_transcribe(file_path):
 
 def transcribe_handler(vid):
     video_id = vid
-    ext = download_yt(video_id)
-    if ext == "FUCK":
-        print('Transcription failed because of invalid extension')
-        os.remove('{}.{}'.format(video_id, ext))
-        return "FUCK"
-
-    convert_mp4_wav(video_id, ext)
-    os.remove('{}.{}'.format(video_id, ext))
-
-    text = vosk_transcribe('./{}.wav'.format(video_id))
-    os.remove('{}.wav'.format(video_id))
+    f_path = download_audio(video_id)
+    text = vosk_transcribe(f_path)
+    os.remove(f_path)
     print('Transcription done')
     return text
+
+
+def transcribe_handler_ext(vid, reg_id):
+    video_id = vid
+    f_path = download_audio(video_id)
+    text = vosk_transcribe(f_path)
+    os.remove(f_path)
+    send_message(reg_token=reg_id, title='Transcription done',
+                 body="Your transcription was successful")
