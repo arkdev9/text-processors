@@ -23,14 +23,10 @@ def get_audio_url(youtube_url: str) -> str:
 
 def download_audio(vid: str):
     youtube_url = 'https://youtube.com/watch?v={}'.format(vid)
-    cmd_str = 'ffmpeg -ss 0 -i "{}" -ss 0 -t 300 {}.mp3'.format(
+    cmd_str = 'ffmpeg -ss 0 -i "{}" -ss 0 -t 300 -vn -ar 16000 -ac 1 {}.wav'.format(
         get_audio_url(youtube_url), vid)
     print(cmd_str)
     os.system(cmd_str)
-
-    cmd_str = 'ffmpeg -i {}.mp3 {}.wav'.format(vid, vid)
-    os.system(cmd_str)
-    os.remove('{}.mp3'.format(vid))
     return '{}.wav'.format(vid)
 
 
