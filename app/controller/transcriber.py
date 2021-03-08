@@ -1,12 +1,14 @@
 from fastapi import BackgroundTasks, APIRouter
 from pydantic import BaseModel
+from elasticsearch import Elasticsearch
 
+from ..config import DB_HOST, DB_PORT, DB_USER, DB_PW, ES_CONN_SCHEME
 from ..utils.transcriber.transcriber import transcribe_handler, transcribe_handler_ext
 from ..utils.transcriber.utils import get_video_duration
 
-# YT API KEY = AIzaSyBTR1FSGH1Rptk0kAtzeABPFeIvJ3NhFyM
-
 router = APIRouter()
+es = Elasticsearch(["{}://{}:{}".format(ES_CONN_SCHEME, DB_HOST, DB_PORT)],
+                   http_auth=(DB_USER, DB_PW), verify_certs=False)
 
 
 class TranscribeModel(BaseModel):
@@ -16,6 +18,10 @@ class TranscribeModel(BaseModel):
 class TranscribeExtModel(BaseModel):
     vid: str
     reg_id: str
+
+
+class GetTranscriptModel(BaseModel):
+    transcript_id: str
 
 
 @router.post("/transcribe")
@@ -33,6 +39,13 @@ def transcribe(request: TranscribeModel):
 
 @router.post("/transcribe-ext")
 def transcribe_ext(request: TranscribeExtModel, background_tasks: BackgroundTasks):
+    print(request.vid, request.reg_id)
     background_tasks.add_task(transcribe_handler_ext,
                               vid=request.vid, reg_id=request.reg_id)
     return {'ok': True, 'text': "You're video has been queued for transcription"}
+
+
+@router.post('/get-transcript')
+def get_transcript(request: GetTranscriptModel):
+    resp = es.get(index='webextension', id=request.transcript_id)
+    return {'resp': resp}

@@ -1,4 +1,5 @@
 sudo snap install ffmpeg
+sudo apt install youtube-dl
 pip install virtualenv
 virtualenv -p python venv
 source venv/bin/activate

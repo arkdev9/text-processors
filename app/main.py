@@ -1,6 +1,7 @@
 import logging
-
+import os
 import uvicorn
+
 from elasticapm.contrib.starlette import make_apm_client, ElasticAPM
 from fastapi import FastAPI, HTTPException
 from starlette.middleware.cors import CORSMiddleware
@@ -36,7 +37,7 @@ def get_application() -> FastAPI:
 
 
 app = get_application()
-
+logger.info("os environ: {}".format(os.environ))
 logger.info("Open http://127.0.0.1:{}/docs to see Swagger API Documentation.")
 
 if __name__ == "__main__":

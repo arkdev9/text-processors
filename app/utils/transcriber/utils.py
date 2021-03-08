@@ -8,12 +8,15 @@ import requests
 
 
 def get_audio_url(youtube_url: str) -> str:
+    print(os.environ)
     command = ['youtube-dl', '--youtube-skip-dash-manifest', '-g', youtube_url]
     process = subprocess.Popen(
         command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = process.communicate()
-
+    print(err)
+    print('out', out)
     urls = out.split(b'\n')
+    print(urls)
     audio_url = urls[1].decode('utf-8')
     return audio_url
 
