@@ -1,5 +1,0 @@
-from app.utils.transcriber.transcriber import transcribe_handler
-
-reg_id = 'dZsOl3ESi4jb6pqMb1hG1V:APA91bFoX_eKJm7AK3sDngdAuW_QlnAbZkj_6RLDgVM5BcU_P17afQurxImlJkoxzFk0gHPO9_jFua3qkMTyufGuL-mqHT751lQFEcSkJTTr2azbkjpUl-0ufh0Zd0M5JgKXl0LeHrKz'
-
-print(transcribe_handler('O6cMo-MFS64'))

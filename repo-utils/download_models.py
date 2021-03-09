@@ -26,3 +26,11 @@ blob = bucket.get_blob('Demo-Europarl-EN.pcl')
 with open('app/models/Demo-Europarl-EN.pcl', 'wb') as f:
     blob.download_to_file(f)
     print("Downloaded {}".format(blob.name))
+from transformers import pipeline
+from transformers.models.auto.modeling_auto import AutoModelForSeq2SeqLM
+# from transformers import AutoTokenizer
+model_name_or_path = "sshleifer/distilbart-cnn-12-6"
+tokenizer = model_name_or_path
+model = AutoModelForSeq2SeqLM.from_pretrained(pretrained_model_name_or_path=model_name_or_path)
+summarizer = pipeline("summarization", model=model, tokenizer=tokenizer, device=-1)
+summarizer.save_pretrained(save_directory="app/models/nlp/sshleifer/distilbart-cnn-12-6")
