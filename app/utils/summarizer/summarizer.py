@@ -3,7 +3,7 @@ from transformers import pipeline
 from transformers.models.auto.modeling_auto import AutoModelForSeq2SeqLM
 from typing import List, Optional
 from haystack import Document
-
+import os
 logger = logging.getLogger(__name__)
 
 
@@ -102,3 +102,10 @@ class Summarizer:
             result.append(cur_doc)
 
         return result
+
+logger = logging.getLogger(__name__)
+
+sumamrizer_path = os.path.join(
+    os.getenv("MODEL_BASE_PATH", "app/models/"), "nlp/sshleifer/distilbart-cnn-12-6"
+)
+logger.info("USING SUMMARIZER FROM "+sumamrizer_path)

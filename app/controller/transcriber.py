@@ -40,8 +40,7 @@ def transcribe(request: TranscribeModel):
 @router.post("/transcribe-ext")
 def transcribe_ext(request: TranscribeExtModel, background_tasks: BackgroundTasks):
     print(request.vid, request.reg_id)
-    background_tasks.add_task(transcribe_handler_ext,
-                              vid=request.vid, reg_id=request.reg_id)
+    background_tasks.add_task(transcribe_handler_ext,vid=request.vid, reg_id=request.reg_id)
     return {'ok': True, 'text': "You're video has been queued for transcription"}
 
 
