@@ -107,9 +107,9 @@ def transcribe_handler_ext_summarize(vid, reg_id,ratio):
         summary = summarizer_model.predict(documents=DOCS, min_length=int(total_words*ratio), max_length=int(total_words * min(1,ratio+0.05)))[0]
         print(summary)
         retted = es.index('webextension', {'text': text, 'video_id': vid,'summary':summary.text})
-        send_message(reg_token=reg_id, title='Transcription done',
-                     body="Your transcription was successful", data={'transcript_id': retted['_id'], 'ok': str(True)})
+        send_message(reg_token=reg_id, title='Summarization done',
+                     body="Your Summarization was successful", data={'transcript_id': retted['_id'], 'ok': str(True)})
     except Exception as e:
         print(e)
-        send_message(reg_token=reg_id, title="Transcription didn't complete",
-                     body="Your transcription wasn't successful", data={'ok': str(False)})
+        send_message(reg_token=reg_id, title="Summarization didn't complete",
+                     body="Your Summarization wasn't successful", data={'ok': str(False)})
