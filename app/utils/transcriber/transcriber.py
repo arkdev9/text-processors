@@ -118,6 +118,7 @@ def transcribe_summarize_handler(vid, reg_id, ratio):
 def upload_summarize_handler(text, reg_id):
     try:
         summary = get_summary_from_text(text, 0.5)
+        print(summary)
         retted = es.index(
             'webextension', {'text': text, 'summary': summary.text})
         send_message(reg_token=reg_id, title="Summarization done",
@@ -129,6 +130,7 @@ def upload_summarize_handler(text, reg_id):
 
 
 def get_summary_from_text(text, ratio):
+    print(text)
     DOCS = []
     DOCS.append(Document(text=str(text)))
     total_words = len(text.split())

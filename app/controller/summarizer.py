@@ -65,9 +65,12 @@ async def upload_summarize(request: UploadSummarizeModel, background_tasks: Back
     ext = name[name.rindex('.')+1:]
     loc_path = get_file_path(name)
     header, encoded = request.file_data.split(",", 1)
+    print('header\n{}'.format(header))
+    print('data\n{}'.format(encoded[:100]))
     contents = base64.b64decode(encoded)
     with open(loc_path, 'wb') as f:
         f.write(contents)
     text = get_text_from_file(ext, loc_path)
+    print(text)
     background_tasks.add_task(upload_summarize_handler, text, request.reg_id)
     return {'ok': True, 'text': 'Summarization for your file has started'}
