@@ -20,8 +20,8 @@ class TranscribeExtModel(BaseModel):
     reg_id: str
 
 
-class GetTranscriptModel(BaseModel):
-    transcript_id: str
+class GetDocumentModel(BaseModel):
+    document_id: str
 
 
 @router.post("/transcribe")
@@ -40,11 +40,12 @@ def transcribe(request: TranscribeModel):
 @router.post("/transcribe-ext")
 def transcribe_ext(request: TranscribeExtModel, background_tasks: BackgroundTasks):
     print(request.vid, request.reg_id)
-    background_tasks.add_task(transcribe_handler_ext,vid=request.vid, reg_id=request.reg_id)
+    background_tasks.add_task(transcribe_handler_ext,
+                              vid=request.vid, reg_id=request.reg_id)
     return {'ok': True, 'text': "You're video has been queued for transcription"}
 
 
-@router.post('/get-transcript')
-def get_transcript(request: GetTranscriptModel):
-    resp = es.get(index='webextension', id=request.transcript_id)
+@router.post('/get-document')
+def get_document(request: GetDocumentModel):
+    resp = es.get(index='webextension', id=request.document_id)
     return {'resp': resp}
