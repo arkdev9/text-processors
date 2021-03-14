@@ -104,10 +104,12 @@ def store_transcription_to_index(text,video_id,should_summarize):
     else:
         complete_summary = ""
         for doc in processed_text:
-            part_summary = get_summary_from_text(doc['text'],ratio=0.5)
-            print("PARTIAL SUMMARY",part_summary)
-            es.index(indextostore, {'text': doc['text'], 'video_id': video_id,'source_id':source_id,'summary':part_summary.text})
-            complete_summary+=part_summary.text
+            try:
+                part_summary = get_summary_from_text(doc['text'],ratio=0.5)
+                es.index(indextostore, {'text': doc['text'], 'video_id': video_id,'source_id':source_id,'summary':part_summary.text})
+                complete_summary+=part_summary.text
+            except:
+                print("FAILED SUMMARIZING THIS DOC")
         return source_id,complete_summary
 
 def transcribe_handler_ext(vid, reg_id):
