@@ -71,6 +71,5 @@ async def upload_summarize(request: UploadSummarizeModel, background_tasks: Back
     with open(loc_path, 'wb') as f:
         f.write(contents)
     text = get_text_from_file(ext, loc_path)
-    print(text)
     background_tasks.add_task(upload_summarize_handler, text, request.reg_id)
     return {'ok': True, 'text': 'Summarization for your file has started'}

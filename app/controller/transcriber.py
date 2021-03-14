@@ -47,5 +47,18 @@ def transcribe_ext(request: TranscribeExtModel, background_tasks: BackgroundTask
 
 @router.post('/get-document')
 def get_document(request: GetDocumentModel):
-    resp = es.get(index='webextension', id=request.document_id)
-    return {'resp': resp}
+    resp = es.search(
+    index="webextension",
+    body={
+        "query": {
+            "match": {
+                "source_id":request.document_id
+            }
+        }
+    })
+    documents = resp["hits"]["hits"]
+    resp_doc = {"_source":{"text":"","summary":""}}
+    for doc in documents: 
+        resp_doc["_source"]["text"]+=doc["_source"]["text"]
+        resp_doc["_source"]["summary"]+=doc["_source"]["summary"]
+    return {"resp":resp_doc}

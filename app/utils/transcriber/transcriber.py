@@ -5,6 +5,8 @@ import spacy
 import wave
 import textwrap
 import numpy as np
+from haystack.preprocessor.preprocessor import PreProcessor
+import uuid 
 
 from elasticsearch import Elasticsearch
 from typing import Optional
@@ -25,6 +27,13 @@ es = Elasticsearch(["{}://{}:{}".format(ES_CONN_SCHEME, DB_HOST, DB_PORT)],
 model = Model("app/models/vosk-model-en-us-aspire-0.2")
 p = Punctuator('app/models/Demo-Europarl-EN.pcl')
 
+
+processor = PreProcessor(clean_empty_lines=True,
+                         clean_whitespace=True,
+                         clean_header_footer=True,
+                         split_by="word",
+                         split_length=256,
+                         split_respect_sentence_boundary=True)
 
 def vosk_transcribe(file_path):
     check = []
@@ -82,6 +91,24 @@ def transcribe_handler(vid):
     print('Transcription done')
     return text
 
+def store_transcription_to_index(text,video_id,should_summarize):
+    if not video_id:
+        video_id=""
+    source_id = uuid.uuid1()
+    indextostore="webextension"
+    processed_text = processor.process({'text': text})
+    if not should_summarize:
+        for doc in processed_text:
+            es.index(indextostore, {'text': doc['text'], 'video_id': video_id,'source_id':source_id})
+        return source_id,text
+    else:
+        complete_summary = ""
+        for doc in processed_text:
+            part_summary = get_summary_from_text(doc['text'],ratio=0.5)
+            print("PARTIAL SUMMARY",part_summary)
+            es.index(indextostore, {'text': doc['text'], 'video_id': video_id,'source_id':source_id,'summary':part_summary.text})
+            complete_summary+=part_summary.text
+        return source_id,complete_summary
 
 def transcribe_handler_ext(vid, reg_id):
     try:
@@ -89,9 +116,9 @@ def transcribe_handler_ext(vid, reg_id):
         f_path = download_audio(video_id)
         text = vosk_transcribe(f_path)
         os.remove(f_path)
-        retted = es.index('webextension', {'text': text, 'video_id': vid})
+        source_id,text = store_transcription_to_index(text=text,video_id=video_id,should_summarize=False)
         send_message(reg_token=reg_id, title='Transcription done',
-                     body="Your transcription was successful", data={'document_id': retted['_id'], 'ok': str(True)})
+                     body="Your transcription was successful", data={'document_id': str(source_id), 'ok': str(True)})
     except:
         send_message(reg_token=reg_id, title="Transcription didn't complete",
                      body="Your transcription wasn't successful", data={'ok': str(False)})
@@ -103,12 +130,9 @@ def transcribe_summarize_handler(vid, reg_id, ratio):
         f_path = download_audio(video_id)
         text = vosk_transcribe(f_path)
         os.remove(f_path)
-        summary = get_summary_from_text(text, ratio)
-        print(summary)
-        retted = es.index(
-            'webextension', {'text': text, 'video_id': vid, 'summary': summary.text})
+        source_id,summary = store_transcription_to_index(text=text,video_id=video_id,should_summarize=True)
         send_message(reg_token=reg_id, title='Summarization done',
-                     body="Your Summarization was successful", data={'document_id': retted['_id'], 'ok': str(True)})
+                     body="Your Summarization was successful", data={'document_id': str(source_id), 'ok': str(True)})
     except Exception as e:
         print(e)
         send_message(reg_token=reg_id, title="Summarization didn't complete",
@@ -117,12 +141,9 @@ def transcribe_summarize_handler(vid, reg_id, ratio):
 
 def upload_summarize_handler(text, reg_id):
     try:
-        summary = get_summary_from_text(text, 0.5)
-        print(summary)
-        retted = es.index(
-            'webextension', {'text': text, 'summary': summary.text})
+        source_id,summary = store_transcription_to_index(text=text,video_id=None,should_summarize=True)
         send_message(reg_token=reg_id, title="Summarization done",
-                     body="Your summarization was successful", data={'document_id': retted['_id'], 'ok': str(True)})
+                     body="Your summarization was successful", data={'document_id': str(source_id), 'ok': str(True)})
     except Exception as e:
         print(e)
         send_message(reg_token=reg_id, title="Summarization didn't complete",
@@ -130,7 +151,6 @@ def upload_summarize_handler(text, reg_id):
 
 
 def get_summary_from_text(text, ratio):
-    print(text)
     DOCS = []
     DOCS.append(Document(text=str(text)))
     total_words = len(text.split())
