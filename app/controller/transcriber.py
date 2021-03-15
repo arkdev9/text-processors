@@ -58,7 +58,8 @@ def get_document(request: GetDocumentModel):
     })
     documents = resp["hits"]["hits"]
     resp_doc = {"_source":{"text":"","summary":""}}
-    for doc in documents: 
+    for doc in documents:
+        if "summary" in  doc["_source"].keys():
+            resp_doc["_source"]["summary"]+=doc["_source"]["summary"]
         resp_doc["_source"]["text"]+=doc["_source"]["text"]
-        resp_doc["_source"]["summary"]+=doc["_source"]["summary"]
     return {"resp":resp_doc}
