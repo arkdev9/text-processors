@@ -16,3 +16,4 @@ vosk
 youtube-dl
 isodate
 firebase-admin
+youtube_transcript_api

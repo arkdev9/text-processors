@@ -1,24 +1,28 @@
-import os
-import sys
 import json
-import spacy
-import wave
+import os
+import re
+import sys
 import textwrap
-import numpy as np
-from haystack.preprocessor.preprocessor import PreProcessor
-import uuid 
-
-from elasticsearch import Elasticsearch
+import uuid
+import wave
+from itertools import islice
 from typing import Optional
-from vosk import Model, KaldiRecognizer, SetLogLevel
-from transformers import ProphetNetTokenizer, ProphetNetForConditionalGeneration, ProphetNetConfig
-from punctuator import Punctuator
 
-from ...config import DB_HOST, DB_PORT, DB_USER, DB_PW, ES_CONN_SCHEME
-from .utils import download_audio
+import numpy as np
+import spacy
+from elasticsearch import Elasticsearch
+from haystack import Document
+from haystack.preprocessor.preprocessor import PreProcessor
+from punctuator import Punctuator
+from transformers import (ProphetNetConfig, ProphetNetForConditionalGeneration,
+                          ProphetNetTokenizer)
+from vosk import KaldiRecognizer, Model, SetLogLevel
+from youtube_transcript_api import YouTubeTranscriptApi
+
+from ...config import DB_HOST, DB_PORT, DB_PW, DB_USER, ES_CONN_SCHEME
 from ..fcm import send_message
 from ..summarizer.summarizer import Summarizer
-from haystack import Document
+from .utils import download_audio
 
 summarizer_model = Summarizer(
     model_name_or_path="app/models/nlp/sshleifer/distilbart-cnn-12-6")
@@ -34,6 +38,21 @@ processor = PreProcessor(clean_empty_lines=True,
                          split_by="word",
                          split_length=256,
                          split_respect_sentence_boundary=True)
+def get_transcript_from_api(video_id):
+    transcript=""
+    try:
+        data = YouTubeTranscriptApi.get_transcript(video_id)
+        for dicto in data:
+            transcript+=dicto["text"]+" "
+        transcript = ''.join([i if ord(i) < 128 else ' ' for i in transcript])
+        transcript = re.sub('-', '',transcript)
+        transcript = re.sub(' +', ' ',transcript)
+        transcript = re.sub(r'\[\w+\]', '',transcript)
+        transcript = p.punctuate(transcript)
+    except Exception as err:
+        print(err)
+    
+    return transcript
 
 def vosk_transcribe(file_path):
     check = []
@@ -84,19 +103,24 @@ def vosk_transcribe(file_path):
 
 def transcribe_handler(vid):
     video_id = vid
-    f_path = download_audio(video_id)
-    print(f_path)
-    text = vosk_transcribe(f_path)
-    os.remove(f_path)
-    print('Transcription done')
+    text = get_transcript_from_api(video_id)
+    if len(text)==0:
+        f_path = download_audio(video_id)
+        print(f_path)
+        text = vosk_transcribe(f_path)
+        os.remove(f_path)
+        print('Transcription done')
     return text
-
+    
 def store_transcription_to_index(text,video_id,should_summarize):
     if not video_id:
         video_id=""
     source_id = uuid.uuid1()
     indextostore="webextension"
     processed_text = processor.process({'text': text})
+    ratio = 0.5
+    if ratio > len(text.split())>500:
+        ratio = 0.1
     if not should_summarize:
         for doc in processed_text:
             es.index(indextostore, {'text': doc['text'], 'video_id': video_id,'source_id':source_id})
@@ -105,7 +129,7 @@ def store_transcription_to_index(text,video_id,should_summarize):
         complete_summary = ""
         for doc in processed_text:
             try:
-                part_summary = get_summary_from_text(doc['text'],ratio=0.5)
+                part_summary = get_summary_from_text(doc['text'],ratio=ratio)
                 es.index(indextostore, {'text': doc['text'], 'video_id': video_id,'source_id':source_id,'summary':part_summary.text})
                 complete_summary+=part_summary.text
             except:
@@ -115,9 +139,12 @@ def store_transcription_to_index(text,video_id,should_summarize):
 def transcribe_handler_ext(vid, reg_id):
     try:
         video_id = vid
-        f_path = download_audio(video_id)
-        text = vosk_transcribe(f_path)
-        os.remove(f_path)
+        text = get_transcript_from_api(video_id)
+        print(text)
+        if len(text)==0:
+            f_path = download_audio(video_id)
+            text = vosk_transcribe(f_path)
+            os.remove(f_path)
         source_id,text = store_transcription_to_index(text=text,video_id=video_id,should_summarize=False)
         send_message(reg_token=reg_id, title='Transcription done',
                      body="Your transcription was successful", data={'document_id': str(source_id), 'ok': str(True)})
@@ -129,9 +156,12 @@ def transcribe_handler_ext(vid, reg_id):
 def transcribe_summarize_handler(vid, reg_id, ratio):
     try:
         video_id = vid
-        f_path = download_audio(video_id)
-        text = vosk_transcribe(f_path)
-        os.remove(f_path)
+        text = get_transcript_from_api(video_id)
+        print("YOUTUBE API:",text)
+        if len(text)==0:
+            f_path = download_audio(video_id)
+            text = vosk_transcribe(f_path)
+            os.remove(f_path)
         source_id,summary = store_transcription_to_index(text=text,video_id=video_id,should_summarize=True)
         send_message(reg_token=reg_id, title='Summarization done',
                      body="Your Summarization was successful", data={'document_id': str(source_id), 'ok': str(True)})
@@ -157,5 +187,5 @@ def get_summary_from_text(text, ratio):
     DOCS.append(Document(text=str(text)))
     total_words = len(text.split())
     summary = summarizer_model.predict(documents=DOCS, min_length=int(
-        total_words*ratio), max_length=int(total_words * min(1, ratio+0.05)))[0]
+        total_words*ratio), max_length=int(total_words * min(1, ratio+0.1)))[0]
     return summary
